@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv8w7ipyw0hvs"]
+
+[ext_resource type="Texture2D" uid="uid://cp0s3lo0sk4w3" path="res://assets/4 BigSet.png" id="1_vsvf5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ityuv"]
+size = Vector2(12, 16)
+
+[node name="block" type="RigidBody2D"]
+z_index = 3
+collision_layer = 4
+collision_mask = 3
+mass = 5.0
+gravity_scale = 0.0
+lock_rotation = true
+continuous_cd = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ityuv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_vsvf5")
+region_enabled = true
+region_rect = Rect2(17.8913, 336.226, 12.4444, 16.4444)

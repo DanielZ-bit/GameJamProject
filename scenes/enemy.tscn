@@ -1,0 +1,124 @@
+[gd_scene load_steps=16 format=3 uid="uid://b5uo261cbsagr"]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_0qeyi"]
+[ext_resource type="Texture2D" uid="uid://rywnutqhku6c" path="res://assets/SimpleZombie16bits.png" id="1_8u54o"]
+[ext_resource type="AudioStream" uid="uid://bs4dq6jbosw4r" path="res://assets/ESDZ1 - BREATH_IN_5.wav" id="3_dveu0"]
+[ext_resource type="AudioStream" uid="uid://2h03bgm7vbsu" path="res://assets/ESDZ1 - AGGRO_4.wav" id="4_47ctx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rq828"]
+atlas = ExtResource("1_8u54o")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bk4r0"]
+atlas = ExtResource("1_8u54o")
+region = Rect2(160, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gpmov"]
+atlas = ExtResource("1_8u54o")
+region = Rect2(176, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jvkh1"]
+atlas = ExtResource("1_8u54o")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5e0ug"]
+atlas = ExtResource("1_8u54o")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_buwym"]
+atlas = ExtResource("1_8u54o")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t7mfb"]
+atlas = ExtResource("1_8u54o")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qj1uo"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rq828")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_bk4r0")
+}, {
+"duration": 10.0,
+"texture": SubResource("AtlasTexture_gpmov")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jvkh1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5e0ug")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_buwym")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t7mfb")
+}],
+"loop": true,
+"name": &"walkdown",
+"speed": 3.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o83ny"]
+size = Vector2(8, 8.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ugjrc"]
+size = Vector2(76, 72)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o45fk"]
+size = Vector2(18, 18.6667)
+
+[node name="Enemy" type="CharacterBody2D"]
+scale = Vector2(1.5, 1.5)
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_0qeyi")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_qj1uo")
+animation = &"attack"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2.25)
+shape = SubResource("RectangleShape2D_o83ny")
+
+[node name="DetectionRange" type="Area2D" parent="."]
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionRange"]
+position = Vector2(0, 3.33333)
+shape = SubResource("RectangleShape2D_ugjrc")
+
+[node name="hitRange" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitRange"]
+shape = SubResource("RectangleShape2D_o45fk")
+
+[node name="zombiebreath" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_dveu0")
+
+[node name="zombieattack" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_47ctx")
+
+[node name="attackTimer" type="Timer" parent="."]
+
+[connection signal="frame_changed" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_frame_changed"]
+[connection signal="body_entered" from="DetectionRange" to="." method="_on_detection_range_body_entered"]
+[connection signal="body_entered" from="hitRange" to="." method="_on_hit_range_body_entered"]
+[connection signal="body_exited" from="hitRange" to="." method="_on_hit_range_body_exited"]
+[connection signal="timeout" from="attackTimer" to="." method="_on_attack_timer_timeout"]
